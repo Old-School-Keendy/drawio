@@ -1,4 +1,4 @@
-## Spring Aop
+# Spring Aop实现
 
 ### 一、AOP的基本概念
 
@@ -318,6 +318,12 @@ protected Object wrapIfNecessary(Object bean, String beanName, Object cacheKey) 
 
 
 
+# 源码阅读
 
+## 1、ApplicationContext context = new ClassPathXmlApplicationContext("classpath:spring-test.xml");这句代码是如何执行的？
 
+[[读书笔记]AbstractApplicationContext中refresh方法详解](https://janus.blog.csdn.net/article/details/53893148)
 
+## 2、spring event是怎么实现的？
+
+## 3、spring 中让人印象深刻的设计？

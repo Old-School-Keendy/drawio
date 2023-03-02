@@ -63173,7 +63173,7 @@
 							"_parent": {
 								"$ref": "AAAAAAGGoK6zZCZEGDs="
 							},
-							"name": "Refresh方法",
+							"name": "SequenceDiagram1",
 							"ownedViews": [
 								{
 									"_type": "RectangleView",
@@ -66619,7 +66619,6 @@
 														"$ref": "AAAAAAGGoW7sXi3SguY="
 													},
 													"visible": false,
-													"fillColor": "#d8ffd8",
 													"font": "Arial;13;0",
 													"height": 13
 												},
@@ -66629,7 +66628,6 @@
 													"_parent": {
 														"$ref": "AAAAAAGGoW7sXi3SguY="
 													},
-													"fillColor": "#d8ffd8",
 													"font": "Arial;13;1",
 													"left": 3533,
 													"top": 47,
@@ -66644,7 +66642,6 @@
 														"$ref": "AAAAAAGGoW7sXi3SguY="
 													},
 													"visible": false,
-													"fillColor": "#d8ffd8",
 													"font": "Arial;13;0",
 													"width": 106.20263671875,
 													"height": 13,
@@ -66657,13 +66654,11 @@
 														"$ref": "AAAAAAGGoW7sXi3SguY="
 													},
 													"visible": false,
-													"fillColor": "#d8ffd8",
 													"font": "Arial;13;0",
 													"height": 13,
 													"horizontalAlignment": 1
 												}
 											],
-											"fillColor": "#d8ffd8",
 											"font": "Arial;13;0",
 											"left": 3528,
 											"top": 40,
@@ -66698,7 +66693,6 @@
 											"height": 1235
 										}
 									],
-									"fillColor": "#d8ffd8",
 									"font": "Arial;13;0",
 									"left": 3528,
 									"top": 40,
