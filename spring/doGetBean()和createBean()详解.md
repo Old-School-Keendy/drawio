@@ -368,7 +368,7 @@ public String canonicalName(String name) {
 }
 ```
 
-### 2、到缓存中获取共享单实例
+#### 1-2、到缓存中获取共享单实例
 
 第一个getSingleton(String beanName) 一个参数的，后面还有一个getSingleton(String beanName, ObjectFactory<?> singletonFactory)，不要搞混了。  
 
@@ -382,7 +382,7 @@ Object sharedInstance = getSingleton(beanName);
 
 2. `DefaultSingletonBeanRegistry`#`getSingleton(String beanName, boolean allowEarlyReference)`
 
-### 3、getSingleton(String beanName, boolean allowEarlyReference)方法
+#### 1-3、getSingleton(String beanName, boolean allowEarlyReference)方法
 
 `DefaultSingletonBeanRegistry`#`getSingleton(String beanName, boolean allowEarlyReference)`方法，这里涉及到了循环依赖的解决，代码处理了setter循环依赖，原因就在于提前暴露对象到了第3级缓存中，在接下来发现循环依赖的时候，可以从第3级缓存中获取。
 
@@ -444,9 +444,9 @@ Object sharedInstance = getSingleton(beanName);
     }
 ```
 
-### 3、mbd的一些处理
+### 2、mbd的一些处理
 
-#### 3-1、合并beanDefinition
+#### 2-1、合并beanDefinition
 
 ```java
  //为什么需要合并?
@@ -462,7 +462,7 @@ Object sharedInstance = getSingleton(beanName);
 RootBeanDefinition mbd = getMergedLocalBeanDefinition(beanName);
 ```
 
-#### 3-2、beanDefinition depends-on属性的循环依赖处理
+#### 2-2、beanDefinition depends-on属性的循环依赖处理
 
 涉及到两个map：①dependentBeanMap ②dependenciesForBeanMap
 
@@ -536,9 +536,9 @@ RootBeanDefinition mbd = getMergedLocalBeanDefinition(beanName);
     }
 ```
 
-### 4、单例bean构造的情况
+### 3、单例bean构造的情况
 
-#### 4-1、CASE-SINGLETON：
+#### 3-1、CASE-SINGLETON：
 
 这里是第二个getSingleton方法，`DefaultSingletonBeanRegistry`#`getSingleton(String beanName, ObjectFactory<?> singletonFactory)`这里第二个参数不是boolean，而是一个单例工厂。
 
@@ -652,7 +652,7 @@ public Object getSingleton(String beanName, ObjectFactory<?> singletonFactory) {
     }
 ```
 
-#### 4-2、CASE-PROTOTYPE
+#### 3-2、CASE-PROTOTYPE
 
 和singleton类似，区别在于查询的缓存不同。循环依赖的问题在处理mbd之前就已经判断过了
 
@@ -698,7 +698,7 @@ public Object getSingleton(String beanName, ObjectFactory<?> singletonFactory) {
     }
 ```
 
-### 5、doGetBean总结
+### 4、doGetBean总结
 
 doGetBean的主要逻辑：
 
@@ -718,7 +718,7 @@ doGetBean的主要逻辑：
 
 ## 二、createBean()整体逻辑
 
-#### 6-1、 createBean(beanName, mbd, args);
+#### 5-1、 createBean(beanName, mbd, args);
 
 ```java
     @Override
@@ -793,7 +793,7 @@ doGetBean的主要逻辑：
     }
 ```
 
-#### 6-2、doCreateBean(beanName, mbdToUse, args)
+#### 5-2、doCreateBean(beanName, mbdToUse, args)
 
 ```java
 protected Object doCreateBean(String beanName, RootBeanDefinition mbd, @Nullable Object[] args)
@@ -921,7 +921,7 @@ protected Object doCreateBean(String beanName, RootBeanDefinition mbd, @Nullable
     }
 ```
 
-#### 6-3、createBeanInstance(beanName, mbd, args)
+#### 5-3、createBeanInstance(beanName, mbd, args)
 
 这个方法就是选择哪个构造函数的，往里深了跟就是选择最优的构造函数，很繁琐。抓住主要逻辑就可以。走出这个方法就得到了早期bean实例
 
@@ -1013,7 +1013,7 @@ protected BeanWrapper createBeanInstance(String beanName, RootBeanDefinition mbd
     }
 ```
 
-#### 6-4、applyMergedBeanDefinitionPostProcessors
+#### 5-4、applyMergedBeanDefinitionPostProcessors
 
 ```java
         // Allow post-processors to modify the merged bean definition.
@@ -1033,7 +1033,7 @@ protected BeanWrapper createBeanInstance(String beanName, RootBeanDefinition mbd
         }
 ```
 
-#### 6-5、早期实例提前暴露
+#### 5-5、早期实例提前暴露
 
 ```java
 if (earlySingletonExposure) {
@@ -1061,7 +1061,7 @@ protected void addSingletonFactory(String beanName, ObjectFactory<?> singletonFa
 }
 ```
 
-#### 6-6、populateBean 依赖注入
+#### 5-6、populateBean 依赖注入
 
 这里的逻辑完成了依赖注入操作，注入了普通的实例，还将之前后置处理器中的注解元数据转为propertyValue并且注入依赖。
 
@@ -1195,7 +1195,7 @@ protected void populateBean(String beanName, RootBeanDefinition mbd, @Nullable B
 }
 ```
 
-#### 6-7、initializeBean 初始化
+#### 5-7、initializeBean 初始化
 
 两件事情：
 
@@ -1282,98 +1282,92 @@ protected Object initializeBean(String beanName, Object bean, @Nullable RootBean
 }
 ```
 
-
-
 执行初始化方法：  
 两种方式，要么是实现InitializingBean接口，要么是指定init-method，两个都有那么执行接口的方法
 
 ```java
 protected void invokeInitMethods(String beanName, Object bean, @Nullable RootBeanDefinition mbd)
-			throws Throwable {
-		//执行初始化方法有两种方式，一种是实现了InitializingBean，一种是xml中的bean标签指定了init-method属性
+            throws Throwable {
+        //执行初始化方法有两种方式，一种是实现了InitializingBean，一种是xml中的bean标签指定了init-method属性
 
-		boolean isInitializingBean = (bean instanceof InitializingBean);
-		//条件成立：说明实现了InitializingBean接口
-		if (isInitializingBean && (mbd == null || !mbd.isExternallyManagedInitMethod("afterPropertiesSet"))) {
-			if (logger.isTraceEnabled()) {
-				logger.trace("Invoking afterPropertiesSet() on bean with name '" + beanName + "'");
-			}
-			if (System.getSecurityManager() != null) {
-				try {
-					AccessController.doPrivileged((PrivilegedExceptionAction<Object>) () -> {
-						((InitializingBean) bean).afterPropertiesSet();
-						return null;
-					}, getAccessControlContext());
-				}
-				catch (PrivilegedActionException pae) {
-					throw pae.getException();
-				}
-			}
-			else {
-				//完成afterPropertiesSet接口方法调用
-				((InitializingBean) bean).afterPropertiesSet();
-			}
-		}
+        boolean isInitializingBean = (bean instanceof InitializingBean);
+        //条件成立：说明实现了InitializingBean接口
+        if (isInitializingBean && (mbd == null || !mbd.isExternallyManagedInitMethod("afterPropertiesSet"))) {
+            if (logger.isTraceEnabled()) {
+                logger.trace("Invoking afterPropertiesSet() on bean with name '" + beanName + "'");
+            }
+            if (System.getSecurityManager() != null) {
+                try {
+                    AccessController.doPrivileged((PrivilegedExceptionAction<Object>) () -> {
+                        ((InitializingBean) bean).afterPropertiesSet();
+                        return null;
+                    }, getAccessControlContext());
+                }
+                catch (PrivilegedActionException pae) {
+                    throw pae.getException();
+                }
+            }
+            else {
+                //完成afterPropertiesSet接口方法调用
+                ((InitializingBean) bean).afterPropertiesSet();
+            }
+        }
 
-		//条件成立：
-		if (mbd != null && bean.getClass() != NullBean.class) {
-			//bd中获取init-method指定方法名称
-			String initMethodName = mbd.getInitMethodName();
+        //条件成立：
+        if (mbd != null && bean.getClass() != NullBean.class) {
+            //bd中获取init-method指定方法名称
+            String initMethodName = mbd.getInitMethodName();
 
-			if (StringUtils.hasLength(initMethodName) &&
-					//通过接口实现了初始化方法，isInitializingBean就会是true，取反得到false，直接退出
-					!(isInitializingBean && "afterPropertiesSet".equals(initMethodName)) &&
-					!mbd.isExternallyManagedInitMethod(initMethodName)) {
-				//反射执行初始化方法
-				invokeCustomInitMethod(beanName, bean, mbd);
-			}
-		}
-	}
-
+            if (StringUtils.hasLength(initMethodName) &&
+                    //通过接口实现了初始化方法，isInitializingBean就会是true，取反得到false，直接退出
+                    !(isInitializingBean && "afterPropertiesSet".equals(initMethodName)) &&
+                    !mbd.isExternallyManagedInitMethod(initMethodName)) {
+                //反射执行初始化方法
+                invokeCustomInitMethod(beanName, bean, mbd);
+            }
+        }
+    }
 ```
 
-
-
-#### 6-8、注册销毁回调
+#### 5-8、注册销毁回调
 
 ```java
-/判断当前bean是否需要注册销毁回调，即容器销毁的时候，会执行bean的销毁方法
-	registerDisposableBeanIfNecessary(beanName, bean, mbd);
+// 判断当前bean是否需要注册销毁回调，即容器销毁的时候，会执行bean的销毁方法
+    registerDisposableBeanIfNecessary(beanName, bean, mbd);
 ```
 
 ```java
-	protected void registerDisposableBeanIfNecessary(String beanName, Object bean, RootBeanDefinition mbd) {
-		AccessControlContext acc = (System.getSecurityManager() != null ? getAccessControlContext() : null);
-		//条件1：原型不会注册销毁回调
-		//条件2：判断是否需要注册销毁回调
-		if (!mbd.isPrototype() && requiresDestruction(bean, mbd)) {
-			if (mbd.isSingleton()) {
-				// Register a DisposableBean implementation that performs all destruction
-				// work for the given bean: DestructionAwareBeanPostProcessors,
-				// DisposableBean interface, custom destroy method.
-				//给当前单实例注册回调adapter适配器。适配器内根据当前的bean是继承接口还是通过bd来决定是通过调用哪个方法来完成销毁
-				registerDisposableBean(beanName,
-						new DisposableBeanAdapter(bean, beanName, mbd, getBeanPostProcessors(), acc));
-			}
-			else {
-				// A bean with a custom scope...
-				Scope scope = this.scopes.get(mbd.getScope());
-				if (scope == null) {
-					throw new IllegalStateException("No Scope registered for scope name '" + mbd.getScope() + "'");
-				}
-				scope.registerDestructionCallback(beanName,
-						new DisposableBeanAdapter(bean, beanName, mbd, getBeanPostProcessors(), acc));
-			}
-		}
-	}
-
+    protected void registerDisposableBeanIfNecessary(String beanName, Object bean, RootBeanDefinition mbd) {
+        AccessControlContext acc = (System.getSecurityManager() != null ? getAccessControlContext() : null);
+        //条件1：原型不会注册销毁回调
+        //条件2：判断是否需要注册销毁回调
+        if (!mbd.isPrototype() && requiresDestruction(bean, mbd)) {
+            if (mbd.isSingleton()) {
+                // Register a DisposableBean implementation that performs all destruction
+                // work for the given bean: DestructionAwareBeanPostProcessors,
+                // DisposableBean interface, custom destroy method.
+                //给当前单实例注册回调adapter适配器。适配器内根据当前的bean是继承接口还是通过bd来决定是通过调用哪个方法来完成销毁
+                registerDisposableBean(beanName,
+                        new DisposableBeanAdapter(bean, beanName, mbd, getBeanPostProcessors(), acc));
+            }
+            else {
+                // A bean with a custom scope...
+                Scope scope = this.scopes.get(mbd.getScope());
+                if (scope == null) {
+                    throw new IllegalStateException("No Scope registered for scope name '" + mbd.getScope() + "'");
+                }
+                scope.registerDestructionCallback(beanName,
+                        new DisposableBeanAdapter(bean, beanName, mbd, getBeanPostProcessors(), acc));
+            }
+        }
+    }
 ```
 
  
 
-### 7、doCreateBean总结
+### 6、doCreateBean总结
 
-#### 7-1、整体的createBean流程：
+#### 6-1、整体的createBean流程：
 
 1. 执行beforeInstantiation后置处理器，进入doCreateBean逻辑 
 
@@ -1401,7 +1395,7 @@ protected void invokeInitMethods(String beanName, Object bean, @Nullable RootBea
 
 7. 返回bean
 
-#### 7-2、各个后置处理器大致出现的位置及其作用：
+#### 6-2、各个后置处理器大致出现的位置及其作用：
 
 1. 一个是合并bd阶段调用的AutowiredAnnotationBeanPostProcessor后置处理器，扫描类继承体系上的注解元数据，并且缓存下来
 

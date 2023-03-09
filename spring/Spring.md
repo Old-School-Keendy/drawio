@@ -1,3 +1,5 @@
+##3、bean的生命周期 
+
 # Spring Aop实现
 
 ### 一、AOP的基本概念
@@ -312,12 +314,6 @@ protected Object wrapIfNecessary(Object bean, String beanName, Object cacheKey) 
 
 个人感觉AdviseSupport有点像BeanDefinition，beanDifinition是维护了Bean的额外信息，AdviseSupport是维护了advice的额外信息
 
-
-
-
-
-
-
 # 源码阅读
 
 ## 1、ApplicationContext context = new ClassPathXmlApplicationContext("classpath:spring-test.xml");这句代码是如何执行的？
@@ -326,4 +322,18 @@ protected Object wrapIfNecessary(Object bean, String beanName, Object cacheKey) 
 
 ## 2、spring event是怎么实现的？
 
-## 3、spring 中让人印象深刻的设计？
+## 3、bean的生命周期
+
+## 4、BeanPostProcessor和BeanFactoryPostProcessor如何实现扩展的？
+
+## 5、三级缓存如何解决循环依赖问题？
+
+## 6、Spring Boot 在启动的时候会干这几件事情：
+
+① Spring Boot 在启动时会去依赖的 Starter 包中寻找 resources/META-INF/spring.factories 文件，然后根据文件中配置的 Jar 包去扫描项目所依赖的 Jar 包。
+
+② 根据 spring.factories 配置加载 AutoConfigure 类
+
+③ 根据 @Conditional 注解的条件，进行自动配置并将 Bean 注入 Spring Context
+
+其实就是 Spring Boot 在启动的时候，按照约定去读取 Spring Boot Starter 的配置信息，再根据配置信息对资源进行初始化，并注入到 Spring 容器中。这样 Spring Boot 启动完毕后，就已经准备好了一切资源，使用过程中直接注入对应 Bean 资源即可。
